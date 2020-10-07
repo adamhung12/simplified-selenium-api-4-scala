@@ -54,7 +54,7 @@
 
     <!--Add project information here start-->
     <url>https://github.com/adamhung12/simplified-selenium-api-4-scala</url>
-    <description></description>
+    <description>Just some short cut and syntax sugar to the java version of selenium api</description>
     <developers>
         <developer>
             <name>Xeth Hung</name>
@@ -84,12 +84,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <test.version>4.11</test.version>
         <selenium.version>3.141.59</selenium.version>
-        <scala.major.version>2.13</scala.major.version>
-        <scala.detail.version>2.13.3</scala.detail.version>
     </properties>
 
     <dependencies>
