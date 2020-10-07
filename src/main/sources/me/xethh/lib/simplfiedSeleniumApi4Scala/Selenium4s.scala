@@ -8,8 +8,8 @@ import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
 import org.openqa.selenium.{By, JavascriptExecutor, WebDriver, WebElement}
 
-import scala.jdk.CollectionConverters._
-//import scala.collection.JavaConverters._
+//import scala.jdk.CollectionConverters._
+import scala.collection.JavaConverters._
 
 
 object Selenium4s {

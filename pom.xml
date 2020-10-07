@@ -30,9 +30,6 @@
                 <build.scala.version.major>_2.13</build.scala.version.major>
                 <build.scala.version.artifact/>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>scala_12</id>
@@ -41,6 +38,9 @@
                 <build.scala.version.major>_2.12</build.scala.version.major>
                 <build.scala.version.artifact>_2.12</build.scala.version.artifact>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>scala_13</id>
