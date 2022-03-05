@@ -4,14 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>toolkits</artifactId>
-        <groupId>me.xethh.libs</groupId>
-        <version>1.5.1</version>
-    </parent>
+<!--    <parent>-->
+<!--        <artifactId>toolkits</artifactId>-->
+<!--        <groupId>me.xethh.libs</groupId>-->
+<!--        <version>1.5.1</version>-->
+<!--    </parent>-->
 
+    <groupId>me.xethh.libs</groupId>
     <artifactId>simplified-selenium-api-4-scala${build.scala.version.artifact}</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
 
     <name>simplified-selenium-api-4-scala</name>
 
@@ -21,36 +22,6 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-
-    <profiles>
-        <profile>
-            <id>scala</id>
-            <properties>
-                <build.scala.version>2.13.3</build.scala.version>
-                <build.scala.version.major>_2.13</build.scala.version.major>
-                <build.scala.version.artifact/>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>scala_12</id>
-            <properties>
-                <build.scala.version>2.12.12</build.scala.version>
-                <build.scala.version.major>_2.12</build.scala.version.major>
-                <build.scala.version.artifact>_2.12</build.scala.version.artifact>
-            </properties>
-        </profile>
-        <profile>
-            <id>scala_13</id>
-            <properties>
-                <build.scala.version>2.13.3</build.scala.version>
-                <build.scala.version.major>_2.13</build.scala.version.major>
-                <build.scala.version.artifact>_2.13</build.scala.version.artifact>
-            </properties>
-        </profile>
-    </profiles>
 
     <!--Add project information here start-->
     <url>https://github.com/adamhung12/simplified-selenium-api-4-scala</url>
@@ -86,8 +57,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <test.version>4.11</test.version>
-        <selenium.version>3.141.59</selenium.version>
+        <test.version>4.13.2</test.version>
+        <selenium.version>4.1.2</selenium.version>
+
+        <build.scala.version>2.13.8</build.scala.version>
+        <build.scala.version.major>_2.13</build.scala.version.major>
+        <build.scala.version.artifact>_2.13</build.scala.version.artifact>
     </properties>
 
     <dependencies>
@@ -101,15 +76,16 @@
             <artifactId>functional-packs</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- Not yet supporting-->
-        <!--    <dependency>-->
-        <!--      <groupId>org.seleniumhq.selenium</groupId>-->
-        <!--      <artifactId>selenium-firefox-driver</artifactId>-->
-        <!--      <version>${selenium.version}</version>-->
-        <!--    </dependency>-->
+
+
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
             <version>${selenium.version}</version>
         </dependency>
         <dependency>
@@ -128,11 +104,9 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>1.7.35</version>
         </dependency>
     </dependencies>
-    <dependencyManagement>
-
-    </dependencyManagement>
 
     <build>
         <sourceDirectory>src/main/sources</sourceDirectory>
