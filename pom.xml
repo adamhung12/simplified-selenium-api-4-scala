@@ -4,14 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>toolkits</artifactId>
-        <groupId>me.xethh.libs</groupId>
-        <version>1.5.1</version>
-    </parent>
+<!--    <parent>-->
+<!--        <artifactId>toolkits</artifactId>-->
+<!--        <groupId>me.xethh.libs</groupId>-->
+<!--        <version>1.5.1</version>-->
+<!--    </parent>-->
 
+    <groupId>me.xethh.libs</groupId>
     <artifactId>simplified-selenium-api-4-scala${build.scala.version.artifact}</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>simplified-selenium-api-4-scala</name>
 
@@ -26,7 +27,7 @@
         <profile>
             <id>scala</id>
             <properties>
-                <build.scala.version>2.13.3</build.scala.version>
+                <build.scala.version>2.13.8</build.scala.version>
                 <build.scala.version.major>_2.13</build.scala.version.major>
                 <build.scala.version.artifact/>
             </properties>
@@ -45,7 +46,7 @@
         <profile>
             <id>scala_13</id>
             <properties>
-                <build.scala.version>2.13.3</build.scala.version>
+                <build.scala.version>2.13.8</build.scala.version>
                 <build.scala.version.major>_2.13</build.scala.version.major>
                 <build.scala.version.artifact>_2.13</build.scala.version.artifact>
             </properties>
@@ -86,8 +87,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <test.version>4.11</test.version>
-        <selenium.version>3.141.59</selenium.version>
+        <test.version>4.13.2</test.version>
+        <selenium.version>4.1.2</selenium.version>
     </properties>
 
     <dependencies>
@@ -101,15 +102,16 @@
             <artifactId>functional-packs</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- Not yet supporting-->
-        <!--    <dependency>-->
-        <!--      <groupId>org.seleniumhq.selenium</groupId>-->
-        <!--      <artifactId>selenium-firefox-driver</artifactId>-->
-        <!--      <version>${selenium.version}</version>-->
-        <!--    </dependency>-->
+
+
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
             <version>${selenium.version}</version>
         </dependency>
         <dependency>
@@ -128,11 +130,9 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>1.7.35</version>
         </dependency>
     </dependencies>
-    <dependencyManagement>
-
-    </dependencyManagement>
 
     <build>
         <sourceDirectory>src/main/sources</sourceDirectory>
@@ -253,26 +253,26 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <gpgArguments>
-                                <arg>--pinentry-mode</arg>
-                                <arg>loopback</arg>
-                            </gpgArguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-gpg-plugin</artifactId>-->
+<!--                <version>1.6</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>sign-artifacts</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>sign</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <gpgArguments>-->
+<!--                                <arg>&#45;&#45;pinentry-mode</arg>-->
+<!--                                <arg>loopback</arg>-->
+<!--                            </gpgArguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>
