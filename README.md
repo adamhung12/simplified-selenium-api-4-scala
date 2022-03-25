@@ -13,7 +13,7 @@ mvn clean compile package package
 <dependency>
     <groupId>me.xethh.libs</groupId>
     <artifactId>simplified-selenium-api-4-scala_2.13</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 ---------------------------
