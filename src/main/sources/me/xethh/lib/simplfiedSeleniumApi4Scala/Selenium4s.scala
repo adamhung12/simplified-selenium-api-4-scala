@@ -1,26 +1,70 @@
 package me.xethh.lib.simplfiedSeleniumApi4Scala
 
+import me.xethh.utils.dateUtils.D
 import me.xethh.utils.functionalPacks.Scope
 import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 import org.openqa.selenium.firefox.{FirefoxDriver, FirefoxOptions}
 import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.remote._
 import org.openqa.selenium.remote.codec.w3c.{W3CHttpCommandCodec, W3CHttpResponseCodec}
-import org.openqa.selenium.support.ui.{ExpectedConditions, WebDriverWait}
-import org.openqa.selenium.{By, JavascriptExecutor, WebDriver, WebElement}
+import org.openqa.selenium.support.ui.{ExpectedCondition, ExpectedConditions, WebDriverWait}
+import org.openqa.selenium.{By, JavascriptExecutor, OutputType, WebDriver, WebElement}
 
-import java.io.File
+import java.io.{File, FileOutputStream}
 import java.net.URL
 import java.time.Duration
 import java.util
 import java.util.function.Supplier
 import java.util.regex.Pattern
 import scala.jdk.CollectionConverters._
-import scala.language.implicitConversions
-import scala.util.{Random, Try}
+import scala.language.{existentials, implicitConversions}
+import scala.util.{Failure, Random, Success, Try}
 
 
 object Selenium4s {
+  type CapId = String
+
+  def IdGen(): () => CapId = {
+    var index = -1;
+    () => {
+      index += 1
+      D.dt().now().format("yyyy-MM-dd__hh_mm_ss") + "%05d".format(index)
+    }
+  }
+
+  type LogMethod = (CapId, String) => Unit
+  val defaultLogMethod: LogMethod = (id, msg) => {
+    println(s"[${id}] || ${msg}")
+  }
+
+
+  case class ScreenCap(basePath: String = "Screen-Capture",
+                       idGen: () => CapId = IdGen(),
+                      )
+                      (implicit logMethod: LogMethod, driver: RemoteWebDriver) {
+
+    val path: String = if (basePath.endsWith("/")) basePath.substring(0, basePath.length - 1) else basePath
+
+    def clear(): Try[Unit] = Try {
+      new File(path).listFiles().foreach(it => it.delete())
+    }
+
+    def cap(msg: String, except: Throwable => Unit = _ => {}): Try[Unit] = {
+      Try {
+        val id = idGen.apply()
+        val os = new FileOutputStream(s"${path}/${id}.png")
+        os.write(driver.getScreenshotAs(OutputType.BYTES))
+        logMethod(id, msg)
+      } match {
+        case Failure(exception) =>
+          Try {
+            except(exception)
+          }
+        case tryResult =>
+          tryResult
+      }
+    }
+  }
 
   trait Scoped
 
@@ -36,8 +80,9 @@ object Selenium4s {
   def exponentialBackoff(): Supplier[Long] = {
     new Supplier[Long] {
       var num = 0
+
       override def get(): Long = {
-        num +=1
+        num += 1
         num match {
           case 1 => 1000
           case x if x >= 20 => 80 * 1000 + Random.nextLong(500)
@@ -85,10 +130,10 @@ object Selenium4s {
 
   }
 
-  class ElementExtension(webElement: WebElement) extends Scoped{
+  class ElementExtension(webElement: WebElement) extends Scoped {
 
-    def scrollToMe(implicit webDriver: WebDriver): WebElement ={
-      webDriver.asInstanceOf[JavascriptExecutor].executeScript("arguments[0].scrollIntoView()",webElement)
+    def scrollToMe(implicit webDriver: WebDriver): WebElement = {
+      webDriver.asInstanceOf[JavascriptExecutor].executeScript("arguments[0].scrollIntoView()", webElement)
       webElement
     }
 
@@ -111,7 +156,34 @@ object Selenium4s {
     }
   }
 
-  class ByExtension(by: By) extends Scoped{
+  class ByExtension(by: By) extends Scoped {
+
+    def waitForPredicate(condition: WebDriver => Boolean)(implicit webDriverWait: WebDriverWait): Option[Boolean] = {
+      try {
+        Some(
+          webDriverWait.until(
+            (driver: WebDriver) => try {
+              condition(driver)
+            } catch {
+              case _: Throwable =>
+                false
+            }
+          )
+        )
+      }
+      catch {
+        case _: Throwable => None
+      }
+    }
+
+    def waitForCondition(cond: ExpectedCondition[Boolean])(implicit webDriverWait: WebDriverWait): Option[Boolean] = {
+      try {
+        Some(webDriverWait.until(cond))
+      }
+      catch {
+        case _: Throwable => None
+      }
+    }
 
     def waitForSingle(implicit webDriverWait: WebDriverWait): Option[WebElement] = {
       try {
@@ -175,10 +247,14 @@ object Selenium4s {
 
   def setChromeDriveLocation(location: File): Unit = {
     if (!location.exists()) {
-      throw new RuntimeException(s"Chrome driver not exists in path[${location.toString}]")
+      throw new RuntimeException(s"Chrome driver not exists in path[${
+        location.toString
+      }]")
     }
     if (!location.isFile) {
-      throw new RuntimeException(s"Chrome driver[${location.toString}] not a file")
+      throw new RuntimeException(s"Chrome driver[${
+        location.toString
+      }] not a file")
     }
     System.setProperty("webdriver.chrome.driver", location.toString)
   }
@@ -191,7 +267,8 @@ object Selenium4s {
     driver
   }
 
-  def firefoxDriverWithOption(optionSetup: FirefoxOptions => Unit = _ => {}): FirefoxDriver = {
+  def firefoxDriverWithOption(optionSetup: FirefoxOptions => Unit = _ => {
+  }): FirefoxDriver = {
     val opt = new FirefoxOptions()
     optionSetup(opt)
     val driver = new FirefoxDriver(opt)
@@ -199,7 +276,8 @@ object Selenium4s {
     driver
   }
 
-  def chromeDriverWithOption(optionSetup: ChromeOptions => Unit = _ => {}): ChromeDriver = {
+  def chromeDriverWithOption(optionSetup: ChromeOptions => Unit = _ => {
+  }): ChromeDriver = {
     val opt = new ChromeOptions()
     optionSetup(opt)
     val driver = new ChromeDriver(opt)
@@ -211,7 +289,8 @@ object Selenium4s {
   type SessionId = String
 
 
-  def remoteDriver(url: DriverURL, browserType: Browser, sessionId: Option[SessionId] = None, desiredCapabilitiesOperation: DesiredCapabilities => Unit = _ => {}): RemoteWebDriver = {
+  def remoteDriver(url: DriverURL, browserType: Browser, sessionId: Option[SessionId] = None, desiredCapabilitiesOperation: DesiredCapabilities => Unit = _ => {
+  }): RemoteWebDriver = {
     val cap = new DesiredCapabilities()
     cap.setBrowserName(browserType.browserName())
     desiredCapabilitiesOperation(cap)
