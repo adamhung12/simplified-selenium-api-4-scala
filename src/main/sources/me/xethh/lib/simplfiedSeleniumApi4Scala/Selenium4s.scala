@@ -40,12 +40,13 @@ object Selenium4s {
 
   case class ScreenCap(basePath: String = "Screen-Capture",
                        idGen: () => CapId = IdGen(),
+                       clearPathBeforeStart: Boolean = false
                       )
                       (implicit logMethod: LogMethod, driver: RemoteWebDriver) {
 
     val path: String = if (basePath.endsWith("/")) basePath.substring(0, basePath.length - 1) else basePath
 
-    def clear(): Try[Unit] = Try {
+    if(clearPathBeforeStart){
       new File(path).listFiles().foreach(it => it.delete())
     }
 
